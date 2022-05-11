@@ -21,9 +21,9 @@ public class TransmitterTimeRxMessage extends BaseMessage {
 
     public TransmitterTimeRxMessage(byte[] packet) {
         if (packet.length >= 10) {
-            if (packet[0] == opcode && checkCRC(packet)) {
-                data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-
+            data.put(packet).rewind();
+            if (data.get(0) == opcode && checkCRC(data)) {
+                data.rewind();
                 status = TransmitterStatus.getBatteryLevel(data.get(1));
                 currentTime = data.getInt(2);
                 sessionStartTime = data.getInt(6);

@@ -1,5 +1,11 @@
 package com.eveningoutpost.dexdrip.G5Model;
 
+import static com.eveningoutpost.dexdrip.G5Model.FastCRC16.check;
+
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.eveningoutpost.dexdrip.Models.JoH;
 import com.eveningoutpost.dexdrip.Services.G5CollectionService;
 import com.google.gson.annotations.Expose;
@@ -18,11 +24,15 @@ public class BaseMessage {
     long postExecuteGuardTime = 50;
     @Expose
     public volatile byte[] byteSequence;
-    public ByteBuffer data;
+    public final static ByteBuffer data = ByteBuffer.allocateDirect(2000).order(ByteOrder.LITTLE_ENDIAN);
+
+    protected BaseMessage() {
+        data.reset();
+        data.rewind();
+    }
 
 
     void init(final byte opcode, final int length) {
-        data = ByteBuffer.allocate(length).order(ByteOrder.LITTLE_ENDIAN);
         data.put(opcode);
         if (length == 1) {
             getByteSequence();
@@ -31,19 +41,22 @@ public class BaseMessage {
         }
     }
 
-    byte[] appendCRC() {
-        data.put(FastCRC16.calculate(getByteSequence(), byteSequence.length - 2));
-        return getByteSequence();
+    void appendCRC() {
+        data.putShort(FastCRC16.calculate(data));
     }
 
-    boolean checkCRC(byte[] data) {
-        if ((data == null) || (data.length < 3)) return false;
-        final byte[] crc = FastCRC16.calculate(data, data.length - 2);
-        return crc[0] == data[data.length - 2] && crc[1] == data[data.length - 1];
+    boolean checkCRC(ByteBuffer data) {
+        if (data.position()>0) {
+            return check(data);
+        }
+        return true;
     }
 
     byte[] getByteSequence() {
-        return byteSequence = data.array();
+        byte[] sequence = new byte[data.position()];
+        data.rewind();
+        data.get(sequence,0,sequence.length);
+        return sequence;
     }
 
     long guardTime() {
@@ -51,11 +64,11 @@ public class BaseMessage {
     }
 
     static long getUnsignedInt(ByteBuffer data) {
-        return ((data.get() & 0xff) + ((data.get() & 0xff) << 8) + ((data.get() & 0xff) << 16) + ((data.get() & 0xff) << 24));
+        return data.getInt();
     }
 
     static int getUnsignedShort(ByteBuffer data) {
-        return ((data.get() & 0xff) + ((data.get() & 0xff) << 8));
+        return Short.toUnsignedInt(data.getShort());
     }
 
     static int getUnsignedByte(ByteBuffer data) {
@@ -69,6 +82,7 @@ public class BaseMessage {
         final StringBuilder sb = new StringBuilder(100);
         for (byte x : bytes) {
             if (sb.length() > 0) sb.append(".");
+            JoH.bytesToHex(bytes);
             sb.append(String.format(Locale.US, "%d", (x & 0xff)));
         }
         return sb.toString();

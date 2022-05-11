@@ -545,21 +545,21 @@ public class Reminders extends ActivityWithRecycler implements SensorEventListen
     }
 
     private void askWhenToReschedule(final Reminder remind) {
-        val now = tsl();
-        val oldt = remind.getPotentialNextSchedule();
-        val newt = now + remind.period;
-        val choice = String.format("%s:    %s  @  %s\n\nor\n\n%s:   %s  @  %s",
+        long now = tsl();
+        long oldt = remind.getPotentialNextSchedule();
+        long newt = now + remind.period;
+        String choice = String.format("%s:    %s  @  %s\n\nor\n\n%s:   %s  @  %s",
                 getString(R.string.old), niceTimeScalarNatural(-msSince(oldt)),hourMinuteString(oldt),
                 getString(R.string.neww), niceTimeScalarNatural(-msSince(newt)),hourMinuteString(newt));
 
-        val builder = new AlertDialog.Builder(this)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.reschedule_with_new_timing)
                 .setMessage(choice);
 
         builder.setPositiveButton(getString(R.string.old), (dialog, which) -> rescheduleNextOld(remind));
         builder.setNegativeButton(getString(R.string.neww), (dialog, which) -> rescheduleNextNew(remind, newt));
 
-        val dialog = builder.create();
+        AlertDialog dialog = builder.create();
         try {
             if (dialog.isShowing()) {
                 dialog.dismiss();

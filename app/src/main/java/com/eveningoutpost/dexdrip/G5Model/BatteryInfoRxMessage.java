@@ -27,7 +27,8 @@ public class BatteryInfoRxMessage extends BaseMessage {
 
     public BatteryInfoRxMessage(byte[] packet) {
         if (packet.length >= 10) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
+            data.put(packet);
+            data.rewind();
             if (data.get() == opcode) {
                 status = data.get();
                 voltagea = getUnsignedShort(data);

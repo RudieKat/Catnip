@@ -1,15 +1,27 @@
 package com.eveningoutpost.dexdrip.Models;
 
 import com.eveningoutpost.dexdrip.HexTestTools;
+import com.google.common.truth.Truth;
 
 import org.junit.Test;
 
+import static com.eveningoutpost.dexdrip.Models.JoH.qs0;
 import static com.eveningoutpost.dexdrip.Models.JoH.validateMacAddress;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 // jamorham
 
 public class JoHTest extends HexTestTools {
+
+    /**
+     * And why would you test it
+     */
+
+    @Test
+    public void validateQsMethod() {
+        String result = JoH.qs(0);
+        Truth.assertThat(result.equals("0")).isTrue();
+    }
 
     @Test
     public void validateMacAddressTest() {

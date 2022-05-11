@@ -17,8 +17,8 @@ public class EGlucoseRxMessage extends BaseGlucoseRxMessage {
     public EGlucoseRxMessage(byte[] packet) {
         UserError.Log.d(TAG, "EGlucoseRX dbg: " + JoH.bytesToHex(packet));
         if (packet.length >= 14) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-            if ((data.get() == opcode) && checkCRC(packet)) {
+            data.put(packet).rewind();
+            if ((data.get() == opcode) && checkCRC(data)) {
 
 
                 //status_raw = data.get();

@@ -23,8 +23,8 @@ public class SessionStopRxMessage extends BaseMessage {
     public SessionStopRxMessage(byte[] packet,String transmitterId) {
         this.transmitterId = transmitterId;
         if (packet.length == length) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-            if ((data.get() == opcode) && checkCRC(packet)) {
+            data.put(packet).rewind();
+            if ((data.get() == opcode) && checkCRC(data)) {
                 valid = true;
                 status = data.get();
                 received = data.get();

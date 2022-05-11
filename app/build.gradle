@@ -90,10 +90,10 @@ android {
 
     defaultConfig {
         applicationId "com.eveningoutpost.dexdrip"
-        minSdkVersion 19
+        minSdkVersion 30
         // increasing target SDK version can cause compatibility issues with Android 7+
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 23
+        targetSdkVersion 30
         // change versionCode only when downgrade should be prevented
         // eg, when data structures are incompatible
         versionCode 1603091400
@@ -174,7 +174,6 @@ android {
         dev {
             minifyEnabled false
             shrinkResources false
-            useProguard false
             ext.enableCrashlytics = false
             ext.alwaysUpdateBuildId = false
             versionNameSuffix "-debug"

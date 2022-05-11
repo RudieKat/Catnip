@@ -28,10 +28,10 @@ public class GlucoseRxMessage extends BaseGlucoseRxMessage {
     public GlucoseRxMessage(byte[] packet) {
         UserError.Log.d(TAG, "GlucoseRX dbg: " + JoH.bytesToHex(packet));
         if (packet.length >= 14) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-            if ((data.get() == opcode) && checkCRC(packet)) {
+            data.put(packet).rewind();
+            if ((data.get() == opcode) && checkCRC(data)) {
 
-                data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
+                data.rewind();
 
                 status_raw = data.get(1);
                 status = TransmitterStatus.getBatteryLevel(data.get(1));

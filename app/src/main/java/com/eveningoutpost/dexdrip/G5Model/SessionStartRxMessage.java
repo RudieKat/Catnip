@@ -21,8 +21,8 @@ public class SessionStartRxMessage extends BaseMessage {
     public SessionStartRxMessage(byte[] packet, String transmitterId) {
         this.transmitterId = transmitterId;
         if (packet.length == length) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-            if ((data.get() == opcode) && checkCRC(packet)) {
+            data.put(packet).rewind();
+            if ((data.get() == opcode) && checkCRC(data)) {
                 valid = true;
                 status = data.get();
                 info = data.get();

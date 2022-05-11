@@ -5,7 +5,6 @@ package com.eveningoutpost.dexdrip.cgm.medtrum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 public enum SensorState {
 
     ErrorUnknown("Error Unknown"),
@@ -17,5 +16,9 @@ public enum SensorState {
 
     @Getter
     String description;
+
+    SensorState(String description) {
+        this.description = description;
+    }
 }
 

@@ -18,8 +18,8 @@ public class CalibrateRxMessage extends BaseMessage {
     CalibrateRxMessage(byte[] packet) {
 
         if (packet.length == length) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-            if ((data.get() == opcode) && checkCRC(packet)) {
+            data.put(packet).rewind();
+            if ((data.get() == opcode) && checkCRC(data)) {
                 info = data.get();
                 result = data.get();
             }

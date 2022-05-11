@@ -88,8 +88,10 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -112,65 +114,47 @@ import java.util.zip.Inflater;
  * lazy helper class for utilities
  */
 public class JoH {
-    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    //Lazy does not even begin to cover it
+    //JESUSUSUSUSUSUS
+    private final static String hexChars = "0123456789ABCDEF";
+    private final static String[] hexArray = new String[256];
+    static {
+        for (int i = 0; i < hexArray.length;i++) {
+            hexArray[i] = hexChars.charAt((i>>4)) + "" + hexChars.charAt(i&0xF);
+        }
+    }
     private final static String TAG = "jamorham JoH";
     private final static int PAIRING_VARIANT_PASSKEY = 1; // hidden in api
-    private final static boolean debug_wakelocks = false;
+
 
     private static double benchmark_time = 0;
     private static Map<String, Double> benchmarks = new HashMap<String, Double>();
     private static final Map<String, Long> rateLimits = new HashMap<>();
 
-    public static boolean buggy_samsung = false; // flag set when we detect samsung devices which do not perform to android specifications
+    // flag set when we detect samsung devices which do not perform to android specifications
+    public static boolean buggy_samsung = false;
+    private final static boolean debug_wakelocks = false;
 
-    // quick string conversion with leading zero
-    public static String qs0(double x, int digits) {
-        final String qs = qs(x, digits);
-        return qs.startsWith(".") ? "0" + qs : qs;
+    private static final NumberFormat decimalFormatter = NumberFormat.getInstance(Locale.ENGLISH);
+    static {
+        decimalFormatter.setRoundingMode(RoundingMode.HALF_UP);
+        decimalFormatter.setGroupingUsed(false);
     }
-
-    // qs = quick string conversion of double for printing
-    public static String qs(double x) {
-        return qs(x, 2);
+    public static String doubleToString(double value) {
+        return JoH.doubleToString(value,2);
     }
-
-    // singletons to avoid repeated allocation
-    private static DecimalFormatSymbols dfs;
-    private static DecimalFormat df;
-    public static String qs(double x, int digits) {
-
-        if (digits == -1) {
-            digits = 0;
-            if (((int) x != x)) {
-                digits++;
-                if ((((int) x * 10) / 10 != x)) {
-                    digits++;
-                    if ((((int) x * 100) / 100 != x)) digits++;
-                }
-            }
-        }
-
-        if (dfs == null) {
-            final DecimalFormatSymbols local_dfs = new DecimalFormatSymbols();
-            local_dfs.setDecimalSeparator('.');
-            dfs = local_dfs; // avoid race condition
-        }
-
-        final DecimalFormat this_df;
-        // use singleton if on ui thread otherwise allocate new as DecimalFormat is not thread safe
-        if (Thread.currentThread().getId() == 1) {
-            if (df == null) {
-                final DecimalFormat local_df = new DecimalFormat("#", dfs);
-                local_df.setMinimumIntegerDigits(1);
-                df = local_df; // avoid race condition
-            }
-            this_df = df;
-        } else {
-            this_df = new DecimalFormat("#", dfs);
-        }
-
-        this_df.setMaximumFractionDigits(digits);
-        return this_df.format(x);
+    /**
+     * A synchronized static method is effectively equivalent to
+     * a synchronized(someLock) {} block construct and so we can murder
+     * this particular issue
+     *
+     * @param value
+     * @param fractions
+     * @return
+     */
+    public static synchronized String doubleToString(double value, int fractions) {
+        decimalFormatter.setMaximumFractionDigits(fractions);
+        return decimalFormatter.format(value);
     }
 
     public static double ts() {
@@ -207,13 +191,19 @@ public class JoH {
 
     public static String bytesToHex(byte[] bytes) {
         if (bytes == null) return "<empty>";
-        final char[] hexChars = new char[bytes.length * 2];
+        final StringBuilder b = new StringBuilder();
         for (int j = 0; j < bytes.length; j++) {
-            final int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+             b.append(hexArray[(int)(bytes[j] & 0xFF)]);
         }
-        return new String(hexChars);
+        return b.toString();
+    }
+    public static String bytesToHex(byte[] bytes, String delimiter) {
+        if (bytes == null) return "<empty>";
+        String[] values = new String[bytes.length];
+        for(int i = 0;i< bytes.length;i++) {
+            values[i] = hexArray[(int)(bytes[i]&0xff)];
+        }
+        return String.join(delimiter,values);
     }
 
     // Convert a stream of bytes to a mac format (i.e: 12:34:AB:BC:DE:FC)
@@ -730,7 +720,7 @@ public class JoH {
             }
         }
         //if (t != 1) unit = unit + "s"; //implemented plurality in every step, because in other languages plurality of time is not every time adding the same character
-        return qs((double) t, 0) + " " + unit;
+        return doubleToString((double) t, 0) + " " + unit;
     }
 
     public static String niceTimeScalar(double t, int digits) {
@@ -758,7 +748,7 @@ public class JoH {
             }
         }
         //if (t != 1) unit = unit + "s"; //implemented plurality in every step, because in other languages plurality of time is not every time adding the same character
-        return qs( t, digits) + " " + unit;
+        return doubleToString( t, digits) + " " + unit;
     }
 
 
@@ -1030,7 +1020,7 @@ public class JoH {
             @Override
             public void run() {
                 try {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AppTheme));
+                    @SuppressLint("RestrictedApi") AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(activity, R.style.AppTheme));
                     builder.setTitle(title);
                     builder.setMessage(message);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

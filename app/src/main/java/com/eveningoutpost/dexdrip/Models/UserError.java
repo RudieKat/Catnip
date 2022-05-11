@@ -276,7 +276,7 @@ public class UserError extends Model {
     }
 
 
-    public static class Log {
+     public static class Log {
         public static void e(String a, String b){
             android.util.Log.e(a, b);
             new UserError(a, b);

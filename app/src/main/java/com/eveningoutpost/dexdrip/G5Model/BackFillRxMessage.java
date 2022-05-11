@@ -15,8 +15,7 @@ public class BackFillRxMessage extends BaseMessage {
     BackFillRxMessage(byte[] packet) {
 
         if (packet.length == length) {
-            data = ByteBuffer.wrap(packet).order(ByteOrder.LITTLE_ENDIAN);
-            if ((data.get() == opcode) && checkCRC(packet)) {
+            if ((data.get() == opcode) && checkCRC(data)) {
                 valid = true;
                 // meh
                 // 51 00 01 01 A1A00200 DDAF0200 82000000 2361 1625
