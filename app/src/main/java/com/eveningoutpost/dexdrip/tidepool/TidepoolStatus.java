@@ -23,7 +23,7 @@ public class TidepoolStatus {
 
         l.add(new StatusItem("Tidepool Synced to", niceTimeScalar(msSince(UploadChunk.getLastEnd())) + " ago")); // TODO needs generic message format string
         final String status = keyStore.getS(TidepoolUploader.STATUS_KEY);
-        if (!JoH.emptyString(status)) {
+        if (!isEmpty(status)) {
             l.add(new StatusItem("Tidepool Status", status));
         }
         return l;

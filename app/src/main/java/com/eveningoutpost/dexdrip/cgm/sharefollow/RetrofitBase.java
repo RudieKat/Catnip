@@ -20,7 +20,7 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.UtilityModels.OkHttpWrapper.enableTls12OnPreLollipop;
 
 /**
@@ -50,7 +50,7 @@ public class RetrofitBase {
         Retrofit instance = instances.get(TAG);
         if (instance == null || !urls.get(TAG).equals(url)) {
             synchronized (instances) {
-                if (emptyString(url)) {
+                if (isEmpty(url)) {
                     UserError.Log.d(TAG, "Empty url - cannot create instance");
                     return null;
                 }

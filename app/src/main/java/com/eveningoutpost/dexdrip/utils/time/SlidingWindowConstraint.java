@@ -10,7 +10,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 /**
  * Created by jamorham on 14/02/2018.
@@ -66,7 +66,7 @@ public class SlidingWindowConstraint {
         // load saved data
         if (this.persist) {
             final String loaded_data = PersistentStore.getString(pref_identifier);
-            if (!emptyString(loaded_data)) {
+            if (!isEmpty(loaded_data)) {
                 fromJson(loaded_data);
             }
         }

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 /**
  * Created by jamorham on 20/01/2017.
@@ -146,8 +146,8 @@ public class RollCall {
     }
 
     private String getRemoteWifiIndicate(final String our_wifi_ssid) {
-        if (emptyString(our_wifi_ssid)) return "";
-        if (emptyString(ssid)) return "";
+        if (isEmpty(our_wifi_ssid)) return "";
+        if (isEmpty(ssid)) return "";
         if (!our_wifi_ssid.equals(ssid)) return "\n" + ssid;
         return "";
     }
@@ -248,7 +248,7 @@ public class RollCall {
         for (Map.Entry entry : indexed.entrySet()) {
             final RollCall rc = (RollCall) entry.getValue();
             if (!rc.role.equals("Master")) continue;
-            if (emptyString(rc.mhint)) continue;
+            if (isEmpty(rc.mhint)) continue;
             if (bestMatch == null || rc.last_seen > bestMatch.last_seen) {
                 bestMatch = rc;
             }

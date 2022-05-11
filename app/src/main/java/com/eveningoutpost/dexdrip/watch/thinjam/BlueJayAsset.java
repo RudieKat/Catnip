@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import lombok.val;
 
 import static com.eveningoutpost.dexdrip.Models.JoH.bytesToHex;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.watch.thinjam.assets.AssetDownload.getAsset;
 
 // jamorham
@@ -100,7 +100,7 @@ class BlueJayAsset {
     static byte[] getAssetBytes(int id) {
         val locale = Pref.getString("bluejay_asset_locale", "");
         byte[] assetBytes = getAssetForLocale(id, locale);
-        if (assetBytes == null && !emptyString(locale)) {
+        if (assetBytes == null && !isEmpty(locale)) {
             assetBytes = getAssetForLocale(id, "");
         }
         if (assetBytes != null) {

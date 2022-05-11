@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 public class BlueJayManifest {
 
@@ -28,7 +28,7 @@ public class BlueJayManifest {
     private static final String TAG = "BlueJayManifest";
 
     public static List<BlueJayManifest> parseToList(final String manifestString) {
-        if (!emptyString(manifestString)) {
+        if (!isEmpty(manifestString)) {
             try {
                 final Type queueType = new TypeToken<ArrayList<BlueJayManifest>>() {
                 }.getType();

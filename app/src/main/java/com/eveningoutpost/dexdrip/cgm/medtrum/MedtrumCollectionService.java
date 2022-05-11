@@ -1,5 +1,38 @@
 package com.eveningoutpost.dexdrip.cgm.medtrum;
 
+import static com.eveningoutpost.dexdrip.Models.BgReading.bgReadingInsertMedtrum;
+import static com.eveningoutpost.dexdrip.Models.JoH.msSince;
+import static com.eveningoutpost.dexdrip.Models.JoH.msTill;
+import static com.eveningoutpost.dexdrip.Models.JoH.quietratelimit;
+import static com.eveningoutpost.dexdrip.UtilityModels.Constants.HOUR_IN_MS;
+import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MEDTRUM_SERVICE_FAILOVER_ID;
+import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MEDTRUM_SERVICE_RETRY_ID;
+import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MINUTE_IN_MS;
+import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.BAD;
+import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.CRITICAL;
+import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.GOOD;
+import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.NORMAL;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.CGM_CHARACTERISTIC_INDICATE;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_AUTH_REPLY;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_BACK_REPLY;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_CALI_REPLY;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_CONN_REPLY;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_STAT_REPLY;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_TIME_REPLY;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.Medtrum.getSerial;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CALIBRATE;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CLOSE;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CLOSED;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CONNECT;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.ENABLE;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.INIT;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.SCAN;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.SET_CONN_PARAM;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.SensorState.NotCalibrated;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.SensorState.Ok;
+import static com.eveningoutpost.dexdrip.cgm.medtrum.TimeKeeper.timeStampFromTickCounter;
+import static com.eveningoutpost.dexdrip.xdrip.gs;
+
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -46,6 +79,7 @@ import com.eveningoutpost.dexdrip.utils.DexCollectionType;
 import com.eveningoutpost.dexdrip.utils.DisconnectReceiver;
 import com.eveningoutpost.dexdrip.utils.bt.Subscription;
 import com.eveningoutpost.dexdrip.utils.framework.WakeLockTrampoline;
+import com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import com.eveningoutpost.dexdrip.xdrip;
 import com.polidea.rxandroidble2.RxBleClient;
 import com.polidea.rxandroidble2.RxBleConnection;
@@ -56,48 +90,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.schedulers.Schedulers;
+
 //import rx.Subscription;
 //import rx.schedulers.Schedulers;
 
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-
-import static com.eveningoutpost.dexdrip.Models.BgReading.bgReadingInsertMedtrum;
-import static com.eveningoutpost.dexdrip.Models.JoH.msSince;
-import static com.eveningoutpost.dexdrip.Models.JoH.msTill;
-import static com.eveningoutpost.dexdrip.Models.JoH.quietratelimit;
-import static com.eveningoutpost.dexdrip.UtilityModels.Constants.HOUR_IN_MS;
-import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MEDTRUM_SERVICE_FAILOVER_ID;
-import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MEDTRUM_SERVICE_RETRY_ID;
-import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MINUTE_IN_MS;
-import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.BAD;
-import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.CRITICAL;
-import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.GOOD;
-import static com.eveningoutpost.dexdrip.UtilityModels.StatusItem.Highlight.NORMAL;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.CGM_CHARACTERISTIC_INDICATE;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_AUTH_REPLY;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_BACK_REPLY;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_CALI_REPLY;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_CONN_REPLY;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_STAT_REPLY;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Const.OPCODE_TIME_REPLY;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.Medtrum.getSerial;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CALIBRATE;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CLOSE;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CLOSED;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.CONNECT;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.ENABLE;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.INIT;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.SCAN;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.MedtrumCollectionService.STATE.SET_CONN_PARAM;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.SensorState.NotCalibrated;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.SensorState.Ok;
-import static com.eveningoutpost.dexdrip.cgm.medtrum.TimeKeeper.timeStampFromTickCounter;
-
-import static com.eveningoutpost.dexdrip.xdrip.gs;
 /**
  *
  * jamorham
@@ -1030,7 +1027,7 @@ public class MedtrumCollectionService extends JamBaseBluetoothService implements
 
 
     public static SpannableString nanoStatus() {
-        if (JoH.emptyString(lastErrorState)) return null;
+        if (isEmpty(lastErrorState)) return null;
         return Span.colorSpan(lastErrorState, CRITICAL.color());
     }
 
@@ -1045,7 +1042,7 @@ public class MedtrumCollectionService extends JamBaseBluetoothService implements
         final List<StatusItem> l = new ArrayList<>();
 
         l.add(new StatusItem("Phone Service State", lastState));
-        if (!JoH.emptyString(lastErrorState)) {
+        if (!isEmpty(lastErrorState)) {
             l.add(new StatusItem("Error", lastErrorState, BAD));
         }
         if (lastAnnex != null) {

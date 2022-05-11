@@ -27,7 +27,7 @@ import okhttp3.Response;
 
 import static com.eveningoutpost.dexdrip.Models.JoH.cancelNotification;
 import static com.eveningoutpost.dexdrip.Models.JoH.defaultGsonInstance;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Models.JoH.getWakeLock;
 import static com.eveningoutpost.dexdrip.Models.JoH.msSince;
 import static com.eveningoutpost.dexdrip.Models.JoH.pratelimit;
@@ -112,7 +112,7 @@ public class DesertComms {
     }
 
     public static boolean probeOasis(final String topic, final String hint) {
-        if (emptyString(hint)) return false;
+        if (isEmpty(hint)) return false;
         if (Home.get_follower()) {
             final String url = HttpUrl.parse(getInitialUrl(hint)).newBuilder().addPathSegment("sync").addPathSegment("id")
                     .addPathSegment(topic)
@@ -135,7 +135,7 @@ public class DesertComms {
     private static String getOasisIP() {
         final String ip = getOasisIPfromPrefs();
 
-        if (emptyString(lastLoadedIP)) {
+        if (isEmpty(lastLoadedIP)) {
             lastLoadedIP = ip;
         }
         setCurrentToBackup(ip, lastLoadedIP);
@@ -155,7 +155,7 @@ public class DesertComms {
         }
         if (toSave.equals(newIP)) return;
         final String backup = PersistentStore.getString(PREF_OASISIP);
-        if (!toSave.equals(backup) && (!emptyString(toSave))) {
+        if (!toSave.equals(backup) && (!isEmpty(toSave))) {
             PersistentStore.setString(PREF_OASISIP, toSave);
             UserError.Log.d(TAG, "Saving to backup: " + toSave);
         }
@@ -163,7 +163,7 @@ public class DesertComms {
 
     public static String getOasisBackupIP() {
         final String backupIP = PersistentStore.getString(PREF_OASISIP);
-        return emptyString(backupIP) ? null : backupIP;
+        return isEmpty(backupIP) ? null : backupIP;
     }
 
     @SuppressWarnings("NonAtomicOperationOnVolatileField")
@@ -323,7 +323,7 @@ public class DesertComms {
 
         // reprocess url for specified host
         String getUrl(final String host) {
-            if (emptyString(host)) return url;
+            if (isEmpty(host)) return url;
             try {
                 return HttpUrl.parse(url).newBuilder().host(host).build().toString();
             } catch (NullPointerException e) {
@@ -392,7 +392,7 @@ public class DesertComms {
     public static List<StatusItem> megaStatus() {
         final List<StatusItem> l = new ArrayList<>();
         if (Home.get_follower()) {
-            if (emptyString(getOasisIP())) {
+            if (isEmpty(getOasisIP())) {
                 l.add(new StatusItem("Desert Master", "Not known yet - needs QR code scan?"));
             } else {
                 l.add(new StatusItem("Desert Master", getOasisIP(), RouteTools.reachable(getOasisIP()) ? StatusItem.Highlight.NORMAL : StatusItem.Highlight.BAD));

@@ -63,7 +63,7 @@ import static android.bluetooth.BluetoothDevice.BOND_NONE;
 import static com.eveningoutpost.dexdrip.ImportedLibraries.usbserial.util.HexDump.dumpHexString;
 import static com.eveningoutpost.dexdrip.Models.JoH.bytesToHex;
 import static com.eveningoutpost.dexdrip.Models.JoH.dateTimeText;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Models.JoH.hourMinuteString;
 import static com.eveningoutpost.dexdrip.Models.JoH.msSince;
 import static com.eveningoutpost.dexdrip.Models.JoH.quietratelimit;
@@ -262,7 +262,7 @@ public class InPenService extends JamBaseBluetoothSequencer {
             if (shouldServiceRun()) {
 
                 final String mac = InPen.getMac(); // load from settings class
-                if (emptyString(mac)) {
+                if (isEmpty(mac)) {
                     // if mac not set then start up a scan and do nothing else
                     new FindNearby().scan();
                 } else {

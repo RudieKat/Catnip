@@ -54,7 +54,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 
 import static com.eveningoutpost.dexdrip.Models.JoH.bytesToHex;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Models.JoH.getResourceURI;
 import static com.eveningoutpost.dexdrip.Models.JoH.msTill;
 import static com.eveningoutpost.dexdrip.Models.JoH.niceTimeScalar;
@@ -204,7 +204,7 @@ public class MiBandService extends JamBaseBluetoothSequencer {
                     }
                     isNeedToAuthenticate = true;
                 }
-                if (emptyString(mac)) {
+                if (isEmpty(mac)) {
                     // if mac not set then start up a scan and do nothing else
                     new FindNearby().scan();
                 } else {

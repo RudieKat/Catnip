@@ -1,5 +1,7 @@
 package com.eveningoutpost.dexdrip.wearintegration;
 
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
+
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,7 +13,7 @@ import com.eveningoutpost.dexdrip.Models.UserError;
 import com.eveningoutpost.dexdrip.NewDataObserver;
 import com.eveningoutpost.dexdrip.UtilityModels.Constants;
 import com.eveningoutpost.dexdrip.UtilityModels.PersistentStore;
-
+import com.eveningoutpost.dexdrip.utils.validation.StringTools.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,10 +122,10 @@ public class ExternalStatusService extends IntentService {
 
     // extract a TBR percentage from a status line string.
     public static String getTBR(final String statusLine) {
-        if (JoH.emptyString(statusLine)) return "";
-        val pattern = Pattern.compile(".*([^0-9]|^)([0-9]+%)", Pattern.DOTALL); // match last of any number followed by %
-        val matcher = pattern.matcher(statusLine);
-        val matches = matcher.find();       // was at least one found?
+        if (isEmpty(statusLine)) return "";
+        Pattern pattern = Pattern.compile(".*([^0-9]|^)([0-9]+%)", Pattern.DOTALL); // match last of any number followed by %
+        Matcher matcher = pattern.matcher(statusLine);
+        boolean matches = matcher.find();       // was at least one found?
 
         if (matches) {
             return matcher.group(matcher.groupCount());    // return the last one

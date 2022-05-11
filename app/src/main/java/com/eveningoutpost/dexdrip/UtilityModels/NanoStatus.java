@@ -31,7 +31,7 @@ import java.util.HashMap;
 import lombok.Setter;
 import lombok.val;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 public class NanoStatus {
 
@@ -206,7 +206,7 @@ public class NanoStatus {
         // TODO apply timeout?
         try {
             val result = PersistentStore.getString(REMOTE_COLLECTOR_STATUS_STORE + prefix);
-            if (emptyString(result)) return new SpannableString("");
+            if (isEmpty(result)) return new SpannableString("");
             return SpannableSerializer.unserializeSpannableString(result);
         } catch (Exception e) {
             return new SpannableString("");

@@ -2,7 +2,7 @@ package com.eveningoutpost.dexdrip.watch.lefun;
 
 // jamorham
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 public class ModelFeatures {
 
@@ -12,7 +12,7 @@ public class ModelFeatures {
 
     static int getScreenWidth(final String model) {
 
-        if (emptyString(model)) return 4; // unknown default
+        if (isEmpty(model)) return 4; // unknown default
 
         switch (model) {
 

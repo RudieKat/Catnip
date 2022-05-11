@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Models.JoH.mapSortedByValue;
 
 /**
@@ -134,7 +134,7 @@ public class DatabaseAdmin extends BaseAppCompatActivity {
         public void process(List<String> results) {
             final StringBuilder sb = new StringBuilder();
             for (final String result : results) {
-                if (!emptyString(result)) {
+                if (!isEmpty(result)) {
                     sb.append(result);
                     sb.append("\n");
                 }

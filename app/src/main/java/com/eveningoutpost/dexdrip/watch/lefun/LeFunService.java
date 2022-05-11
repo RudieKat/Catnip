@@ -46,7 +46,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.eveningoutpost.dexdrip.Models.ActiveBgAlert.currentlyAlerting;
 import static com.eveningoutpost.dexdrip.Models.JoH.bytesToHex;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Models.JoH.msTill;
 import static com.eveningoutpost.dexdrip.Models.JoH.niceTimeScalar;
 import static com.eveningoutpost.dexdrip.Models.JoH.roundDouble;
@@ -100,7 +100,7 @@ public class LeFunService extends JamBaseBluetoothSequencer {
             if (shouldServiceRun()) {
 
                 final String mac = LeFun.getMac();
-                if (emptyString(mac)) {
+                if (isEmpty(mac)) {
                     // if mac not set then start up a scan and do nothing else
                     new FindNearby().scan();
                 } else {
@@ -307,7 +307,7 @@ public class LeFunService extends JamBaseBluetoothSequencer {
     }
 
     private void probeModelTypeIfUnknown() {
-        if (emptyString(LeFun.getModel())) {
+        if (isEmpty(LeFun.getModel())) {
             new QueueMe()
                     .setBytes(new TxPing().getBytes())
                     .setDescription("Set Probe model type")
@@ -348,7 +348,7 @@ public class LeFunService extends JamBaseBluetoothSequencer {
 
         UserError.Log.d(TAG,"Queuing message alert of type: "+type+" "+alert);
 
-        if (!emptyString(alert)) {
+        if (!isEmpty(alert)) {
 
             probeModelTypeIfUnknown();
 

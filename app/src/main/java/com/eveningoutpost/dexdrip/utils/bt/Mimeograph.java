@@ -22,7 +22,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.utils.bt.Mimeograph.SearchState.COPY_COLLISION_KEY;
 import static com.eveningoutpost.dexdrip.utils.bt.Mimeograph.SearchState.COPY_DEVICE_KEY;
 import static com.eveningoutpost.dexdrip.utils.bt.Mimeograph.SearchState.COPY_SCAN;
@@ -359,7 +359,7 @@ public class Mimeograph {
         }
 
         boolean valid() {
-            return !emptyString(device) && !emptyString(adapter);
+            return !isEmpty(device) && !isEmpty(adapter);
         }
 
         String toJson() {

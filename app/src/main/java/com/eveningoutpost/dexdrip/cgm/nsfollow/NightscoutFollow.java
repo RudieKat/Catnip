@@ -35,7 +35,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Query;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.UtilityModels.BgGraphBuilder.DEXCOM_PERIOD;
 import static com.eveningoutpost.dexdrip.UtilityModels.OkHttpWrapper.enableTls12OnPreLollipop;
 import static com.eveningoutpost.dexdrip.cgm.nsfollow.NightscoutFollowService.msg;
@@ -109,7 +109,7 @@ public class NightscoutFollow {
         })
                 .setOnFailure(() -> msg(session.treatmentsCallback.getStatus()));
 
-        if (!emptyString(urlString)) {
+        if (!isEmpty(urlString)) {
             try {
                 int count = Math.min(MissedReadingsEstimator.estimate() + 1, (int) (Constants.DAY_IN_MS / DEXCOM_PERIOD));
                 UserError.Log.d(TAG, "Estimating missed readings as: " + count);
@@ -180,7 +180,7 @@ public class NightscoutFollow {
     public static Retrofit getRetrofitInstance() throws IllegalArgumentException {
         if (retrofit == null) {
             final String url = getUrl();
-            if (emptyString(url)) {
+            if (isEmpty(url)) {
                 UserError.Log.d(TAG, "Empty url - cannot create instance");
                 return null;
             }

@@ -29,6 +29,7 @@ import java.util.List;
 
 import static com.eveningoutpost.dexdrip.UtilityModels.BgGraphBuilder.DEXCOM_PERIOD;
 import static com.eveningoutpost.dexdrip.utils.DexCollectionType.NSFollow;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.xdrip.gs;
 
 /**
@@ -229,6 +230,6 @@ public class NightscoutFollowService extends ForegroundService {
     }
 
     public static SpannableString nanoStatus() {
-        return JoH.emptyString(lastState) ? null : new SpannableString(lastState);
+        return isEmpty(lastState) ? null : new SpannableString(lastState);
     }
 }

@@ -4,7 +4,7 @@ package com.eveningoutpost.dexdrip.G5Model;
 
 import static com.eveningoutpost.dexdrip.G5Model.Ob1G5StateMachine.getFirmwareXDetails;
 import static com.eveningoutpost.dexdrip.G5Model.Ob1G5StateMachine.getRawFirmwareVersionString;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 import com.eveningoutpost.dexdrip.UtilityModels.Constants;
 import com.google.common.collect.ImmutableSet;
@@ -107,7 +107,7 @@ public class FirmwareCapability {
 
     public static boolean doWeHaveVersion(final String tx_id) {
         val firmware_version = getRawFirmwareVersionString(tx_id);
-        return !emptyString(firmware_version) && !firmware_version.equals("error");
+        return !isEmpty(firmware_version) && !firmware_version.equals("error");
     }
 
     public static boolean isTransmitterRawIncapable(final String tx_id) {

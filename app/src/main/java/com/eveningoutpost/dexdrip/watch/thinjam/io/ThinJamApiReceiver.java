@@ -13,7 +13,7 @@ import com.eveningoutpost.dexdrip.watch.thinjam.BlueJayAPI;
 
 import lombok.val;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.UtilityModels.Intents.BLUEJAY_THINJAM_API;
 
 public class ThinJamApiReceiver extends BroadcastReceiver {
@@ -31,10 +31,10 @@ public class ThinJamApiReceiver extends BroadcastReceiver {
         try {
             UserError.Log.d(TAG, "onReceiver: " + intent.getAction());
             if (intent.getAction().equals(BLUEJAY_THINJAM_API)) {
-                val command = intent.getStringExtra(API_COMMAND);
-                if (!emptyString(command)) {
-                    val parameter = intent.getStringExtra(API_PARAM);
-                    val bytes = intent.getByteArrayExtra(API_BYTES);
+                String command = intent.getStringExtra(API_COMMAND);
+                if (!isEmpty(command)) {
+                    String parameter = intent.getStringExtra(API_PARAM);
+                    byte[] bytes = intent.getByteArrayExtra(API_BYTES);
                     BlueJayAPI.processAPI(command, parameter, bytes);
                 } else {
                     UserError.Log.e(TAG, "Empty command received in api");

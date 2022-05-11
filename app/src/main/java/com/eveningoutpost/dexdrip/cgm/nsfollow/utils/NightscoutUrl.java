@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 /**
  * jamorham
@@ -74,7 +74,7 @@ public class NightscoutUrl {
                 secret = uri.getUserInfo();
             }
         }
-        return (emptyString(secret) ? null : secret);
+        return (isEmpty(secret) ? null : secret);
     }
 
     public String getHashedSecret() {

@@ -103,7 +103,7 @@ public class BlueJayEntry {
     public static void sendNotifyIfEnabled(final String message_type, final String msg) {
         if (isEnabled()) {
             final String fmsg = msg.replaceAll("^-", "").trim(); // TODO move
-            if (!JoH.emptyString(msg)) {
+            if (!isEmpty(msg)) {
                 Inevitable.task("bluejay-send-notify-external" + message_type, 200, () -> JoH.startService(BlueJayService.class, "function", "message", "message", fmsg, "message_type", message_type));
             }
         }

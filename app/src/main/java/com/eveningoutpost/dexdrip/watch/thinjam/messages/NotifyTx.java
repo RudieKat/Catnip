@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.watch.thinjam.Const.OPCODE_NOTIFY_MSG;
 
 // jamorham
@@ -30,7 +31,7 @@ public class NotifyTx extends BaseTx {
     }
 
     public static List<NotifyTx> getPacketStreamForNotification(final int notificationType, final String msg) {
-        if (JoH.emptyString(msg)) return null;
+        if (isEmpty(msg)) return null;
         final List<NotifyTx> packets = new ArrayList<>();
         try {
             final byte[] msgBytes = msg.getBytes("UTF-8");

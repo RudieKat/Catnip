@@ -16,7 +16,7 @@ import java.util.Map;
 
 import lombok.Getter;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.cgm.sharefollow.ShareConstants.MAX_RECORDS_TO_ASK_FOR;
 
 /**
@@ -52,7 +52,7 @@ public class ShareFollowDownload extends RetrofitBase {
         this.login = login;
         this.password = password;
         this.serverUrl = server;
-        loginDataLooksOkay = !emptyString(server) && !emptyString(login) && !emptyString(password);
+        loginDataLooksOkay = !isEmpty(server) && !isEmpty(login) && !isEmpty(password);
     }
 
     public boolean doEverything(final int record_request_size) {

@@ -39,7 +39,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import static com.eveningoutpost.dexdrip.GoogleDriveInterface.getDriveIdentityString;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.UtilityModels.desertsync.RouteTools.getBestInterfaceAddress;
 import static com.eveningoutpost.dexdrip.UtilityModels.desertsync.RouteTools.ip;
 
@@ -338,7 +338,7 @@ public class DesertSync extends PlusModel {
         if (host.equals(hint)) {
             UserError.Log.d(TAG, "Looking for hint but master is still the same: " + hint);
             final String backupIP = DesertComms.getOasisBackupIP();
-            if (!emptyString(backupIP) && !backupIP.equals(host)) {
+            if (!isEmpty(backupIP) && !backupIP.equals(host)) {
                 UserError.Log.d(TAG, "Trying backup: " + backupIP);
                 takeMasterHint(backupIP);
             }
@@ -366,13 +366,13 @@ public class DesertSync extends PlusModel {
             final String currentIP = getBestInterfaceAddress();
             UserError.Log.d(TAG, "check ip change: current: " + currentIP);
 
-            if (!emptyString(currentIP)) {
+            if (!isEmpty(currentIP)) {
                 if (lastUsedIP == null) {
                     lastUsedIP = PersistentStore.getString(PREF_LAST_DESERT_MY_IP);
                 }
                 UserError.Log.d(TAG, "check ip change last: " + lastUsedIP);
-                if (emptyString(lastUsedIP) || !currentIP.equals(lastUsedIP)) {
-                    if (!emptyString(lastUsedIP)) {
+                if (isEmpty(lastUsedIP) || !currentIP.equals(lastUsedIP)) {
+                    if (!isEmpty(lastUsedIP)) {
                         UserError.Log.uel(TAG, "Our IP appears to have changed from: " + lastUsedIP + " to " + currentIP + " sending notification to peers");
                         UserError.Log.d(TAG, "check ip change send ping");
                         GcmActivity.desertPing();

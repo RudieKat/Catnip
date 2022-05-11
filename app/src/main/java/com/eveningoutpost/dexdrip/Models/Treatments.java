@@ -58,7 +58,7 @@ import static com.eveningoutpost.dexdrip.Models.JoH.msSince;
 import static com.eveningoutpost.dexdrip.UtilityModels.Constants.HOUR_IN_MS;
 import static com.eveningoutpost.dexdrip.UtilityModels.Constants.MINUTE_IN_MS;
 import static java.lang.StrictMath.abs;
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 // TODO Switchable Carb models
 // TODO Linear array timeline optimization
@@ -743,7 +743,7 @@ public class Treatments extends Model {
     }
 
     private static void evaluateNotesForNotification(final Treatments mytreatment) {
-        if (!emptyString(mytreatment.notes) && mytreatment.notes.startsWith("-")) {
+        if (!isEmpty(mytreatment.notes) && mytreatment.notes.startsWith("-")) {
             BlueJayEntry.sendNotifyIfEnabled(mytreatment.notes);
         }
     }

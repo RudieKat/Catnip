@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import lombok.val;
 
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.watch.thinjam.assets.AssetPackage.parse;
 
 // jamorham
@@ -21,8 +22,8 @@ public class AssetDownload {
     }
 
     public static byte[] getAssetRemote(final String mac, final int assetId, final String locale) {
-        val filename = "asset-" + assetId + ".dat";
-        val localePath = JoH.emptyString(locale) ? "" : locale + "/";
+        String filename = "asset-" + assetId + ".dat";
+        String localePath = isEmpty(locale) ? "" : locale + "/";
         return GetURL.getURLbytes(String.format(Locale.US, "%s%s%s?mac=%s", ASSET_URL, localePath, filename, mac));
     }
 

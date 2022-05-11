@@ -90,6 +90,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -162,6 +163,7 @@ public class JoH {
     }
 
     public static long tsl() {
+        Instant.now().toEpochMilli();
         return System.currentTimeMillis();
     }
 
@@ -1796,7 +1798,7 @@ public class JoH {
         }
     }
 
-    public static boolean emptyString(final String str) {
+    public static boolean isEmpty(final String str) {
         return str == null || str.length() == 0;
     }
 

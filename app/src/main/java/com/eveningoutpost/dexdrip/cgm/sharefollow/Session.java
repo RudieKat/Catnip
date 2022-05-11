@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import okhttp3.ResponseBody;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.cgm.sharefollow.ShareConstants.SESSION_ID_VALIDITY_TIME;
 
 /**
@@ -95,7 +95,7 @@ public class Session {
     }
 
     boolean isIdValid(final String id) {
-        return !emptyString(id) && id.length() == 36 && !id.equals("00000000-0000-0000-0000-000000000000");
+        return !isEmpty(id) && id.length() == 36 && !id.equals("00000000-0000-0000-0000-000000000000");
     }
 
     boolean sessionIdValid() {
@@ -120,7 +120,7 @@ public class Session {
     void loadSessionId() {
         sessionId_timestamp = PersistentStore.getLong(SHARE_FOLLOW_SESSION_ID_TIMESTAMP);
         sessionId = PersistentStore.getString(SHARE_FOLLOW_SESSION_ID);
-        if (emptyString(sessionId)) {
+        if (isEmpty(sessionId)) {
             sessionId = null;
         } else {
             UserError.Log.d(TAG, "Loaded session id: " + sessionId + " age: " + JoH.msSince(sessionId_timestamp) + " valid: " + sessionIdValid());

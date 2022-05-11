@@ -49,7 +49,7 @@ public class BtReconnect extends BluetoothGattCallback {
 
     private static boolean isConnectedToDevice(final String mac) {
         UserError.Log.d(TAG, "isConnected to device: " + mac);
-        if (JoH.emptyString(mac)) {
+        if (isEmpty(mac)) {
             return false;
         }
         final BluetoothManager bluetoothManager = (BluetoothManager) xdrip.getAppContext().getSystemService(Context.BLUETOOTH_SERVICE);

@@ -57,7 +57,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Services.JamBaseBluetoothSequencer.BaseState.CLOSE;
 import static com.eveningoutpost.dexdrip.Services.JamBaseBluetoothSequencer.BaseState.CLOSED;
 import static com.eveningoutpost.dexdrip.Services.JamBaseBluetoothSequencer.BaseState.CONNECT_NOW;
@@ -171,7 +171,7 @@ public abstract class JamBaseBluetoothSequencer extends JamBaseBluetoothService 
     protected void setAddress(String newAddress) {
         DisconnectReceiver.addCallBack(this, TAG);
         ConnectReceiver.addCallBack(this, TAG);
-        if (emptyString(newAddress)) return;
+        if (isEmpty(newAddress)) return;
         newAddress = newAddress.toUpperCase();
 
         if (!JoH.validateMacAddress(newAddress)) {
@@ -246,7 +246,7 @@ public abstract class JamBaseBluetoothSequencer extends JamBaseBluetoothService 
     }
 
     protected synchronized void startConnect(final String address) {
-        if (emptyString(address)) {
+        if (isEmpty(address)) {
             UserError.Log.e(TAG, "Cannot connect as address is null");
             return;
         }
@@ -1034,7 +1034,7 @@ public abstract class JamBaseBluetoothSequencer extends JamBaseBluetoothService 
 
     // does the system think we are connected to a device
     public static boolean isConnectedToDevice(final String mac) {
-        if (JoH.emptyString(mac)) {
+        if (isEmpty(mac)) {
             return false;
         }
         final BluetoothManager bluetoothManager = (BluetoothManager) xdrip.getAppContext().getSystemService(Context.BLUETOOTH_SERVICE);

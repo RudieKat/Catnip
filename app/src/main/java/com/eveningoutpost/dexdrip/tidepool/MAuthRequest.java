@@ -6,7 +6,7 @@ import com.eveningoutpost.dexdrip.UtilityModels.Pref;
 
 import okhttp3.Credentials;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 
 public class MAuthRequest extends BaseMessage {
 
@@ -15,7 +15,7 @@ public class MAuthRequest extends BaseMessage {
         final String username = Pref.getString("tidepool_username", null);
         final String password = Pref.getString("tidepool_password", null);
 
-        if (emptyString(username) || emptyString(password)) return null;
+        if (isEmpty(username) || isEmpty(password)) return null;
         return Credentials.basic(username.trim(), password);
     }
 }

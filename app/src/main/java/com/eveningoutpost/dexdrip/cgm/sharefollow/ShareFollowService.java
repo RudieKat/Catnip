@@ -24,7 +24,7 @@ import com.eveningoutpost.dexdrip.xdrip;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.eveningoutpost.dexdrip.Models.JoH.emptyString;
+import static com.eveningoutpost.dexdrip.utils.validation.StringTools.isEmpty;
 import static com.eveningoutpost.dexdrip.Models.JoH.msSince;
 import static com.eveningoutpost.dexdrip.UtilityModels.BgGraphBuilder.DEXCOM_PERIOD;
 import static com.eveningoutpost.dexdrip.cgm.sharefollow.ShareConstants.MAX_RECORDS_TO_ASK_FOR;
@@ -162,7 +162,7 @@ public class ShareFollowService extends ForegroundService {
 
     private static String getBestStatusMessage() {
         // service state overrides downloader state reply
-        if (emptyString(lastState)) {
+        if (isEmpty(lastState)) {
             if (downloader != null) {
                 return downloader.getStatus();
             }
@@ -250,7 +250,7 @@ public class ShareFollowService extends ForegroundService {
 
     public static SpannableString nanoStatus() {
         final String current_state = getBestStatusMessage();
-        return emptyString(current_state) ? null : new SpannableString(current_state);
+        return isEmpty(current_state) ? null : new SpannableString(current_state);
     }
 }
 
